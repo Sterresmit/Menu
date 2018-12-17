@@ -8,7 +8,7 @@
 
 import UIKit
 class MenuController {
-    
+    // 
     var order = Order() {
         didSet {
             NotificationCenter.default.post(name: MenuController.orderUpdatedNotification, object: nil)
@@ -16,18 +16,19 @@ class MenuController {
         
     }
     static let shared = MenuController()
-    
+    //     notification with waiting time
     static let orderUpdatedNotification = Notification.Name("MenuController.orderUpdated")
     
+    //    definition of get url
     let baseURL = URL(string: "https://resto.mprog.nl/")!
-    
+    //     get categories for menu from server
     func fetchCategories(completion: @escaping ([String]?) -> Void) {
         let categoryURL = baseURL.appendingPathComponent("categories")
         let task = URLSession.shared.dataTask(with: categoryURL)
         {(data, response, error) in
             if let data = data,
                 let jsonDictionary = try?
-            JSONSerialization.jsonObject(with: data) as? [String:Any],
+                    JSONSerialization.jsonObject(with: data) as? [String:Any],
                 let categories = jsonDictionary?["categories"] as?
                     [String] { completion(categories)
             } else {
@@ -38,6 +39,7 @@ class MenuController {
         task.resume()
     }
     
+    //    get dishes from server
     func fetchMenuItems(forCategory categoryName: String, completion: @escaping ([MenuItem]?) -> Void) {
         let initialMenuURL = baseURL.appendingPathComponent("menu")
         var components = URLComponents(url: initialMenuURL, resolvingAgainstBaseURL: true)!
@@ -52,10 +54,10 @@ class MenuController {
             } else {
                 completion(nil)
             }
+        }
+        task.resume()
     }
-    task.resume()
-    }
-    
+    //     place order and get prep time
     func submitOrder(forMenuIDs menuIds: [Int], completion: @escaping (Int?) -> Void) {
         let orderURL = baseURL.appendingPathComponent("order")
         var request = URLRequest(url: orderURL)
@@ -78,7 +80,7 @@ class MenuController {
         }
         task.resume()
     }
-    
+    //     get images corresponding to dishes
     func fetchImage(url: URL, completion: @escaping (UIImage?) ->Void) {
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let data = data,
@@ -87,7 +89,7 @@ class MenuController {
                 completion(nil)
             }
         }
-    task.resume()
+        task.resume()
     }
     
 }

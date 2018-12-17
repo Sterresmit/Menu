@@ -9,33 +9,16 @@
 import UIKit
 
 class MenuTableViewController: UITableViewController {
-    
+    //    define variables of items and category object
     var menuItems = [MenuItem]()
     var category: String!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        title = category.capitalized
-        MenuController.shared.fetchMenuItems(forCategory: category)
-        { (menuItems) in
-            if let menuItems = menuItems {
-                self.updateUI(with: menuItems)
-            }
-        }
-    }
-
-    func updateUI(with menuItems: [MenuItem]) {
-        DispatchQueue.main.async {
-            self.menuItems = menuItems
-            self.tableView.reloadData()
-        }
-    }
+    // define number of rows corresponding to object count
     override func tableView(_ tableView: UITableView,
-    numberOfRowsInSection section: Int) -> Int {
+                            numberOfRowsInSection section: Int) -> Int {
         return menuItems.count
     }
-    
+    //  fill in cells with corresponding data
     override func tableView(_ tableView: UITableView, cellForRowAt
         indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier:
@@ -43,9 +26,9 @@ class MenuTableViewController: UITableViewController {
         configure(cell, forItemAt: indexPath)
         return cell
     }
-    
+    //    get data and set labels and text fields with the corresponding data
     func configure(_ cell: UITableViewCell, forItemAt indexPath:
-    IndexPath) {
+        IndexPath) {
         let menuItem = menuItems[indexPath.row]
         cell.textLabel?.text = menuItem.name
         cell.detailTextLabel?.text = String(format: "$%.2f",menuItem.price)
@@ -64,8 +47,8 @@ class MenuTableViewController: UITableViewController {
         }
     }
     
-  
- 
+    
+    //     pass details on to next detail page of the dish
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "MenuDetailSegue" {
             let menuItemDetailViewController = segue.destination
@@ -74,10 +57,11 @@ class MenuTableViewController: UITableViewController {
             menuItemDetailViewController.menuItem = menuItems[index]
         }
     }
+    //    set height
     override func tableView(_ tableView: UITableView, heightForRowAt
-    indexPath: IndexPath) -> CGFloat {
+        indexPath: IndexPath) -> CGFloat {
         return 100
     }
-
-
+    
+    
 }
